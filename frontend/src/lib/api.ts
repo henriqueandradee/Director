@@ -37,12 +37,14 @@ export interface ApiMessage {
   createdAt: string;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+
 async function req<T>(
   method: string,
   path: string,
   options: { body?: unknown; token?: string } = {},
 ): Promise<T> {
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers: {
       "Content-Type": "application/json",

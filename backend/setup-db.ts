@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
@@ -6,8 +7,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('Connecting to database to apply schema...');
-  
-  const sqlContent = fs.readFileSync(path.join(__dirname, 'setup.sql'), 'utf-8');
+
+  const sqlContent = fs.readFileSync(path.join(process.cwd(), 'setup.sql'), 'utf-8');
   const statements = sqlContent
     .split(';')
     .map(s => s.trim())
@@ -26,7 +27,7 @@ async function main() {
       }
     }
   }
-  
+
   console.log('✅ Schema applied successfully!');
 }
 
