@@ -1,0 +1,192 @@
+### DiretorIA API — Exemplos de Requisição
+### Compatível com VS Code REST Client ou Insomnia
+
+@baseUrl = http://localhost:3000
+@token = SEU_JWT_AQUI
+
+# ==========================================
+# AUTH
+# ==========================================
+
+### Registrar usuário
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "founder@empresa.com",
+  "password": "minhasenha123"
+}
+
+###
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "founder@empresa.com",
+  "password": "minhasenha123"
+}
+
+# ==========================================
+# COMPANIES
+# ==========================================
+
+### Criar empresa com contexto completo
+POST {{baseUrl}}/companies
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Minha Startup",
+  "description": "Plataforma B2B de gestão de projetos para agências",
+  "market": "SaaS B2B - Produtividade e Gestão",
+  "targetAudience": "Donos de agências digitais com 5 a 50 colaboradores",
+  "valueProposition": "Centraliza briefing, aprovações e entregas em um só lugar, eliminando o WhatsApp do processo",
+  "problemsSolved": "Perda de briefings, aprovações demoradas, falta de visibilidade do status dos projetos",
+  "solutions": "Workspace colaborativo com fluxo de aprovação, notificações automáticas e painel de status em tempo real",
+  "benefits": "Reduz retrabalho em 40%, corta tempo de aprovação pela metade, melhora NPS do cliente",
+  "icp": "Dono de agência digital faturando entre R$50k e R$500k/mês, time de 5 a 30 pessoas, cliente B2B",
+  "persona": "Renata, 38 anos, sócia de agência, gere 20 projetos simultâneos, perde 3h/dia em alinhamentos por WhatsApp"
+}
+
+###
+
+### Listar empresas do usuário
+GET {{baseUrl}}/companies
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresa por ID
+GET {{baseUrl}}/companies/ID_DA_EMPRESA
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar contexto da empresa
+PUT {{baseUrl}}/companies/ID_DA_EMPRESA
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "icp": "Dono de agência faturando entre R$100k e R$1M/mês, com foco em clientes de e-commerce",
+  "persona": "Renata, 38 anos, sócia de agência, já tem 3 vendedores e quer escalar sem perder qualidade"
+}
+
+# ==========================================
+# CHATS
+# ==========================================
+
+### Criar ou buscar chat de marketing
+POST {{baseUrl}}/chats
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "companyId": "ID_DA_EMPRESA",
+  "type": "marketing"
+}
+
+###
+
+### Criar ou buscar chat de vendas
+POST {{baseUrl}}/chats
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "companyId": "ID_DA_EMPRESA",
+  "type": "sales"
+}
+
+###
+
+### Criar ou buscar chat de receita
+POST {{baseUrl}}/chats
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "companyId": "ID_DA_EMPRESA",
+  "type": "revenue"
+}
+
+###
+
+### Criar ou buscar chat de negócios
+POST {{baseUrl}}/chats
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "companyId": "ID_DA_EMPRESA",
+  "type": "business"
+}
+
+###
+
+### Listar todos os chats do usuário
+GET {{baseUrl}}/chats
+Authorization: Bearer {{token}}
+
+# ==========================================
+# MESSAGES
+# ==========================================
+
+### Enviar mensagem para o consultor de marketing
+POST {{baseUrl}}/messages/send
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "chatId": "ID_DO_CHAT_MARKETING",
+  "content": "Quais são os 3 canais de aquisição mais eficientes para o nosso estágio atual? Estamos começando agora com budget limitado de R$5k/mês."
+}
+
+###
+
+### Enviar mensagem para o consultor de vendas
+POST {{baseUrl}}/messages/send
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "chatId": "ID_DO_CHAT_SALES",
+  "content": "Nossa taxa de conversão de demo para fechamento está em 15%. O benchmark do mercado é 25%. O que pode estar errado no nosso processo?"
+}
+
+###
+
+### Enviar mensagem para o consultor de receita
+POST {{baseUrl}}/messages/send
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "chatId": "ID_DO_CHAT_REVENUE",
+  "content": "Nosso churn mensal está em 4%. Como reduzir para menos de 2% nos próximos 90 dias?"
+}
+
+###
+
+### Enviar mensagem para o consultor de negócios
+POST {{baseUrl}}/messages/send
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "chatId": "ID_DO_CHAT_BUSINESS",
+  "content": "Estamos pensando em lançar uma versão Enterprise do produto. Faz sentido para o nosso estágio atual?"
+}
+
+###
+
+### Buscar histórico de um chat
+GET {{baseUrl}}/messages/ID_DO_CHAT
+Authorization: Bearer {{token}}
+
+###
+
+### Health check
+GET {{baseUrl}}/health
