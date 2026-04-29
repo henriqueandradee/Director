@@ -31,7 +31,7 @@ export const chatController = {
 
   async delete(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = String(req.params.id);
       await chatService.delete(id, req.user.id);
       res.status(204).send();
     } catch (err) {
