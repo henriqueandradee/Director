@@ -38,6 +38,7 @@ export interface ApiMessage {
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+console.log("Base URL da API em uso:", API_BASE_URL);
 
 async function req<T>(
   method: string,
