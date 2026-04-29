@@ -56,7 +56,7 @@ async function req<T>(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    const errorMsg = (err as { error?: string }).error ?? `Erro ${res.status}`;
+    const errorMsg = (err as any).details || (err as { error?: string }).error || `Erro ${res.status}`;
 
     if (res.status === 401 && !path.startsWith("/auth")) {
       localStorage.removeItem("diretoria_token");
