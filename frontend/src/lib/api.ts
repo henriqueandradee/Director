@@ -54,7 +54,7 @@ async function req<T>(
     ...(options.body !== undefined ? { body: JSON.stringify(options.body) } : {}),
   });
 
-  if (res.status === 401) {
+  if (res.status === 401 && !path.startsWith("/auth")) {
     localStorage.removeItem("diretoria_token");
     localStorage.removeItem("diretoria_user");
     window.location.href = "/auth";
