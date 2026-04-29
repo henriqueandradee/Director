@@ -2,7 +2,7 @@ import { AppError } from '../../shared/errors/AppError';
 import { companyRepository } from '../company/company.repository';
 import { chatService } from '../chat/chat.service';
 import { messageRepository } from './message.repository';
-import { sendToGrok } from '../../integrations/llm/grok.client';
+import { sendToGroq } from '../../integrations/llm/groq.client';
 import { buildSystemPrompt } from '../../integrations/llm/prompt.builder';
 import { logger } from '../../shared/logger/logger';
 
@@ -23,9 +23,9 @@ export const messageService = {
 
     const systemPrompt = buildSystemPrompt(chat.type, company);
 
-    logger.info('Calling Grok', { chatId, type: chat.type, historyLength: historyWithoutCurrent.length });
+    logger.info('Calling Groq', { chatId, type: chat.type, historyLength: historyWithoutCurrent.length });
 
-    const aiResponse = await sendToGrok(systemPrompt, historyWithoutCurrent, content);
+    const aiResponse = await sendToGroq(systemPrompt, historyWithoutCurrent, content);
 
     const assistantMessage = await messageRepository.create(chatId, 'assistant', aiResponse);
 
