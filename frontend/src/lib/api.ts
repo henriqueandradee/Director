@@ -54,16 +54,18 @@ async function req<T>(
     ...(options.body !== undefined ? { body: JSON.stringify(options.body) } : {}),
   });
 
-  if (res.status === 401 && !path.startsWith("/auth")) {
-    localStorage.removeItem("diretoria_token");
-    localStorage.removeItem("diretoria_user");
-    window.location.href = "/auth";
-    throw new Error("Sessão expirada");
-  }
-
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error((err as { error?: string }).error ?? `Erro ${res.status}`);
+    const errorMsg = (err as { error?: string }).error ?? `Erro ${res.status}`;
+
+    if (res.status === 401 && !path.startsWith("/auth")) {
+      localStorage.removeItem("diretoria_token");
+      localStorage.removeItem("diretoria_user");
+      window.location.href = "/auth";
+      throw new Error("Sessão expirada");
+    }
+
+    throw new Error(errorMsg);
   }
 
   return res.json() as Promise<T>;
