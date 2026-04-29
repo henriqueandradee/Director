@@ -8,7 +8,7 @@ const schema = z.object({
   JWT_SECRET: z.string({ required_error: 'JWT_SECRET is required' }).min(32, 'JWT_SECRET must be at least 32 characters'),
   JWT_EXPIRES_IN: z.string().default('7d'),
   GROQ_API_KEY: z.string({ required_error: 'GROQ_API_KEY is required' }),
-  GROQ_MODEL: z.string().default('llama3-8b-8192'),
+  GROQ_MODEL: z.string().default('llama-3.1-8b-instant'),
   RATE_LIMIT_WINDOW_MS: z.string().default('900000').transform(Number),
   RATE_LIMIT_MAX: z.string().default('100').transform(Number),
   RATE_LIMIT_AI_MAX: z.string().default('30').transform(Number),
