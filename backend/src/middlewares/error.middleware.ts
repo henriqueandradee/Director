@@ -24,10 +24,14 @@ export function errorMiddleware(
     });
   }
 
-  logger.error('Unhandled error', { error: err });
+  const errorMessage = err instanceof Error ? err.message : String(err);
+  const errorStack = err instanceof Error ? err.stack : undefined;
+  
+  logger.error('Unhandled error', { error: errorMessage, stack: errorStack, raw: err });
 
   return res.status(500).json({
     error: 'Internal server error',
     code: 'INTERNAL_ERROR',
+    details: errorMessage,
   });
 }
