@@ -3,12 +3,12 @@ import { z } from 'zod';
 import { authService } from './auth.service';
 
 const registerSchema = z.object({
-  email: z.string().email('Invalid email'),
+  email: z.string().email('Invalid email').toLowerCase(),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().toLowerCase(),
   password: z.string().min(1),
 });
 
