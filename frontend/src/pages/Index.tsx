@@ -82,7 +82,6 @@ const Index = () => {
 
   const [company, setCompany] = useState<ApiCompany | null>(null);
   const [context, setContext] = useState<CompanyContext>(DEFAULT_CONTEXT);
-  const [chatIdsByArea, setChatIdsByArea] = useState<Partial<Record<AreaId, string>>>({});
   const [threads, setThreads] = useState<Record<string, Message[]>>({});
   const [history, setHistory] = useState<ChatHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -125,13 +124,6 @@ const Index = () => {
           group: dateToGroup(c.createdAt),
         }));
         setHistory(items);
-
-        const byArea: Partial<Record<AreaId, string>> = {};
-        chatList.forEach((c) => {
-          const a = CHAT_TYPE_TO_AREA[c.type];
-          if (a) byArea[a] = c.id;
-        });
-        setChatIdsByArea(byArea);
       })
       .catch(() => {});
   }, [token]);
@@ -192,26 +184,20 @@ const Index = () => {
     try {
       const co = await ensureCompany();
       const chatType = AREA_TO_CHAT_TYPE[targetArea];
-      let chatId = chatIdsByArea[targetArea];
+      
+      const chat = await chatsApi.create(token, co.id, chatType);
+      const chatId = chat.id;
 
-      if (!chatId) {
-        const chat = await chatsApi.getOrCreate(token, co.id, chatType);
-        chatId = chat.id;
-        setChatIdsByArea((prev) => ({ ...prev, [targetArea]: chatId }));
-
-        const meta = AREAS.find((a) => a.id === targetArea)!;
-        setHistory((prev) => [
-          {
-            id: chat.id,
-            area: targetArea,
-            title: firstMessage?.slice(0, 45) ?? meta.label,
-            group: "Hoje",
-          },
-          ...prev.filter((h) => h.id !== chat.id),
-        ]);
-      } else {
-        await loadMessagesForChat(chatId);
-      }
+      const meta = AREAS.find((a) => a.id === targetArea)!;
+      setHistory((prev) => [
+        {
+          id: chat.id,
+          area: targetArea,
+          title: firstMessage?.slice(0, 45) ?? meta.label,
+          group: "Hoje",
+        },
+        ...prev,
+      ]);
 
       setArea(targetArea);
       setActiveChatId(chatId);
@@ -222,6 +208,25 @@ const Index = () => {
       }
     } catch (err) {
       toast.error((err as Error).message || "Erro ao iniciar conversa");
+    }
+  };
+
+  const handleDeleteChat = async (chatId: string) => {
+    if (!token) return;
+    try {
+      await chatsApi.delete(token, chatId);
+      setHistory((prev) => prev.filter((h) => h.id !== chatId));
+      setThreads((prev) => {
+        const next = { ...prev };
+        delete next[chatId];
+        return next;
+      });
+      if (activeChatId === chatId) {
+        setActiveChatId(null);
+      }
+      toast.success("Conversa excluída");
+    } catch (err) {
+      toast.error((err as Error).message || "Erro ao excluir conversa");
     }
   };
 
@@ -292,6 +297,7 @@ const Index = () => {
           activeId={activeChatId ?? ""}
           onSelect={handleSelectChat}
           onNew={handleNew}
+          onDelete={handleDeleteChat}
           onOpenContext={() => setDrawerOpen(true)}
           area={area}
           mobileOpen={mobileNavOpen}

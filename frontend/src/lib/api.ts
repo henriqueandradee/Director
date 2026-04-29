@@ -88,8 +88,10 @@ export const companiesApi = {
 
 export const chatsApi = {
   list: (token: string) => req<ApiChat[]>("GET", "/chats", { token }),
-  getOrCreate: (token: string, companyId: string, type: string) =>
+  create: (token: string, companyId: string, type: string) =>
     req<ApiChat>("POST", "/chats", { token, body: { companyId, type } }),
+  delete: (token: string, id: string) =>
+    req<void>("DELETE", `/chats/${id}`, { token }),
 };
 
 export const messagesApi = {

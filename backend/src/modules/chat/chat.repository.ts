@@ -2,12 +2,6 @@ import { ChatType } from '@prisma/client';
 import { prisma } from '../../config/database';
 
 export const chatRepository = {
-  findByUserIdAndCompanyIdAndType(userId: string, companyId: string, type: ChatType) {
-    return prisma.chat.findUnique({
-      where: { userId_companyId_type: { userId, companyId, type } },
-    });
-  },
-
   create(userId: string, companyId: string, type: ChatType) {
     return prisma.chat.create({ data: { userId, companyId, type } });
   },
@@ -22,5 +16,9 @@ export const chatRepository = {
 
   findById(id: string) {
     return prisma.chat.findUnique({ where: { id } });
+  },
+
+  delete(id: string) {
+    return prisma.chat.delete({ where: { id } });
   },
 };

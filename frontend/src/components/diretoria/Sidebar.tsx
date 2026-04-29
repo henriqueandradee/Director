@@ -1,4 +1,4 @@
-import { Plus, Settings2, X } from "lucide-react";
+import { Plus, Settings2, X, Trash2 } from "lucide-react";
 import { ChatHistoryItem, AreaId } from "@/lib/diretoria-data";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,7 @@ interface SidebarProps {
   activeId: string;
   onSelect: (id: string) => void;
   onNew: () => void;
+  onDelete: (id: string) => void;
   onOpenContext: () => void;
   area: AreaId;
   mobileOpen: boolean;
@@ -19,6 +20,7 @@ export const Sidebar = ({
   activeId,
   onSelect,
   onNew,
+  onDelete,
   onOpenContext,
   mobileOpen,
   onMobileClose,
@@ -90,17 +92,29 @@ export const Sidebar = ({
                   </p>
                   <ul className="space-y-0.5">
                     {items.map((item) => (
-                      <li key={item.id}>
+                      <li key={item.id} className="group relative flex items-center">
                         <button
                           onClick={() => handleSelect(item.id)}
                           className={cn(
-                            "w-full truncate rounded-lg px-3 py-2 text-left text-sm transition",
+                            "w-full truncate rounded-lg px-3 py-2 text-left text-sm transition pr-8",
                             activeId === item.id
                               ? "bg-secondary font-medium text-foreground"
                               : "text-foreground/75 hover:bg-secondary/60"
                           )}
                         >
                           {item.title}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm("Deseja realmente excluir esta conversa?")) {
+                              onDelete(item.id);
+                            }
+                          }}
+                          className="absolute right-2 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+                          aria-label="Excluir conversa"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </li>
                     ))}

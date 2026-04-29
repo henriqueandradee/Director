@@ -1,4 +1,4 @@
-generator client {
+    generator client {
   provider = "prisma-client-js"
 }
 
@@ -59,7 +59,6 @@ model Chat {
   company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   messages Message[]
 
-  @@unique([userId, companyId, type])
   @@map("chats")
 }
 

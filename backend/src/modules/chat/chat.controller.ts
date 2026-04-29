@@ -19,11 +19,21 @@ export const chatController = {
     }
   },
 
-  async getOrCreate(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  async create(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { companyId, type } = createChatSchema.parse(req.body);
-      const chat = await chatService.getOrCreate(req.user.id, companyId, type);
+      const chat = await chatService.create(req.user.id, companyId, type);
       res.status(201).json(chat);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async delete(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await chatService.delete(id, req.user.id);
+      res.status(204).send();
     } catch (err) {
       next(err);
     }

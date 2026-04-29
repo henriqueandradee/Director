@@ -4,13 +4,10 @@ import { companyRepository } from '../company/company.repository';
 import { chatRepository } from './chat.repository';
 
 export const chatService = {
-  async getOrCreate(userId: string, companyId: string, type: ChatType) {
+  async create(userId: string, companyId: string, type: ChatType) {
     const company = await companyRepository.findById(companyId);
     if (!company) throw AppError.notFound('Company');
     if (company.userId !== userId) throw AppError.forbidden();
-
-    const existing = await chatRepository.findByUserIdAndCompanyIdAndType(userId, companyId, type);
-    if (existing) return existing;
 
     return chatRepository.create(userId, companyId, type);
   },
@@ -24,5 +21,10 @@ export const chatService = {
     if (!chat) throw AppError.notFound('Chat');
     if (chat.userId !== userId) throw AppError.forbidden();
     return chat;
+  },
+
+  async delete(chatId: string, userId: string) {
+    await this.assertOwnership(chatId, userId);
+    return chatRepository.delete(chatId);
   },
 };

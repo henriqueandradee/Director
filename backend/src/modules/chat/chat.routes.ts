@@ -13,4 +13,5 @@ const wrap =
     fn(req as AuthenticatedRequest, res, next);
 
 chatRouter.get('/', wrap(chatController.list));
-chatRouter.post('/', wrap(chatController.getOrCreate));
+chatRouter.post('/', wrap(chatController.create));
+chatRouter.delete('/:id', wrap(chatController.delete));
